@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Currículo e carta por vaga, grátis</title>
+<style>
+:root{--bg:#eef1f6;--fg:#182033;--card:#fff;--mut:#5d6679;--ac:#2a4bd7;--bd:#d3d9e6}
+@media(prefers-color-scheme:dark){:root{--bg:#111623;--fg:#e8ecf5;--card:#1a2133;--mut:#9aa4ba;--ac:#7f98ff;--bd:#2c3650}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font:700 1.7rem/1.2 Georgia,serif;margin:8px 0 4px}
+.lead{color:var(--mut);margin:0 0 20px}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:16px}
+label{display:block;font-weight:600;margin:12px 0 4px}
+textarea,select,input{width:100%;padding:10px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit}
+textarea{min-height:130px;resize:vertical}
+button{font:inherit;font-weight:600;padding:10px 16px;border-radius:6px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer;margin:8px 8px 0 0}
+button.alt{background:transparent;color:var(--ac)}
+button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.tabs button{margin:0 6px 12px 0}
+.tabs button.off{background:transparent;color:var(--ac)}
+.hint{color:var(--mut);font-size:.9rem;margin:6px 0 0}
+.err{color:#c0392b;font-weight:600}
+[hidden]{display:none!important}
+.paper{background:#fff;color:#111;padding:36px 40px;border-radius:4px;border:1px solid var(--bd);font:14px/1.45 Georgia,"Times New Roman",serif;overflow-x:auto}
+.paper h1{font-size:1.7rem;margin:0}.paper .sub{font-size:1.05rem;color:#333}.paper .ct{color:#444;font-size:.85rem;margin:2px 0 10px}
+.paper h2{font:700 .95rem Georgia,serif;border-bottom:1.5px solid #111;margin:16px 0 6px;padding-bottom:2px}
+.paper .row{display:flex;justify-content:space-between;gap:12px;font-weight:700}.paper .row span:last-child{font-weight:400;white-space:nowrap}
+.paper ul{margin:3px 0 8px;padding-left:20px}.paper p{margin:0 0 10px}
+@media print{body{background:#fff}main>*:not(#out){display:none!important}#out>*:not(.paper){display:none!important}
+#out .paper{border:0;padding:0}body[data-a=cv] #cl,body[data-a=cl] #cv{display:none!important}@page{margin:16mm}}
+</style>
+</head>
+<body data-a="cv">
+<main>
+<h1>Currículo e carta para cada vaga</h1>
+<p class="lead">Cole seu currículo e a vaga. Seus dados ficam no seu navegador; nada é guardado em servidor.</p>
+
+<section class="box">
+<label for="cvIn">1. Seu currículo (texto)</label>
+<textarea id="cvIn" placeholder="Cole aqui seu currículo atual, com contato, experiência, formação e habilidades"></textarea>
+<label for="jobIn">2. A vaga (texto do anúncio)</label>
+<textarea id="jobIn" placeholder="Cole aqui o anúncio completo da vaga"></textarea>
+<label for="lang">3. Idioma do resultado</label>
+<select id="lang"><option value="pt">Português</option><option value="es">Español</option><option value="en">English</option></select>
+</section>
+
+<section class="box">
+<div class="tabs">
+<button id="t1" type="button">Grátis: copiar e colar</button>
+<button id="t2" type="button" class="off">Com chave DeepSeek</button>
+</div>
+<div id="m1">
+<p class="hint">Sem custo e sem chave. Funciona com o chat gratuito do DeepSeek (ou qualquer outra IA).</p>
+<button id="mkPrompt" type="button">Copiar o pedido para a IA</button>
+<p class="hint" id="cpMsg"></p>
+<label for="back">Cole aqui a resposta da IA (o JSON)</label>
+<textarea id="back" placeholder='{"name": "...", ...}'></textarea>
+<button id="go1" type="button">Gerar currículo e carta</button>
+</div>
+<div id="m2" hidden>
+<p class="hint">A chave fica só no seu navegador. A API do DeepSeek é cobrada por uso, em valores baixos. Se o navegador bloquear a chamada, use o modo copiar e colar.</p>
+<label for="key">Chave de API do DeepSeek</label>
+<input id="key" type="password" autocomplete="off" placeholder="sk-...">
+<button id="go2" type="button">Gerar com a chave</button>
+</div>
+<p id="err" class="err" role="alert"></p>
+</section>
+
+<section id="out" hidden>
+<div class="tabs">
+<button id="vcv" type="button">Currículo</button>
+<button id="vcl" type="button" class="off">Carta</button>
+<button id="pdf" type="button" class="alt">Salvar em PDF</button>
+</div>
+<p class="hint">Clique no texto para editar antes de salvar. No diálogo de impressão, escolha "Salvar como PDF".</p>
+<div class="paper" id="cv" contenteditable="true"></div>
+<div class="paper" id="cl" contenteditable="true" hidden></div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const LN={pt:"português do Brasil",es:"español de España",en:"English"};
+const T={pt:{sum:"Resumo",exp:"Experiência",edu:"Formação",sk:"Habilidades",lg:"Idiomas"},es:{sum:"Resumen",exp:"Experiencia",edu:"Formación",sk:"Habilidades",lg:"Idiomas"},en:{sum:"Summary",exp:"Experience",edu:"Education",sk:"Skills",lg:"Languages"}};
+const SCHEMA='{"name":"","title":"","contact":[""],"summary":"","experience":[{"role":"","company":"","period":"","bullets":[""]}],"education":[{"title":"","place":"","period":""}],"skills":[""],"languages":[""],"cover_letter":""}';
+function prompt_(){
+ return `Você é um especialista em recrutamento. Adapte o currículo abaixo à vaga e escreva uma carta de apresentação.
+Idioma de saída: ${LN[$("#lang").value]}.
+Regras:
+- Não invente experiências, datas, cargos, estudos nem habilidades que não estejam no currículo.
+- Reordene e destaque o que for relevante para a vaga e use as palavras-chave do anúncio quando forem verdadeiras para a pessoa.
+- Bullets curtos, começando com verbo de ação.
+- Carta com no máximo 250 palavras, em parágrafos separados por \\n\\n.
+- Responda SOMENTE com JSON válido, sem markdown, neste formato: ${SCHEMA}
+
+CURRÍCULO:
+${$("#cvIn").value.trim()}
+
+VAGA:
+${$("#jobIn").value.trim()}`;
+}
+function ok(){const e=$("#err");e.textContent="";if(!$("#cvIn").value.trim()||!$("#jobIn").value.trim()){e.textContent="Preencha o currículo e a vaga.";return false}return true}
+function parse(t){const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a<0||b<a)throw new Error("Não encontrei um JSON na resposta.");return JSON.parse(t.slice(a,b+1))}
+function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
+function render(d){
+ const L=T[$("#lang").value],cv=$("#cv"),cl=$("#cl");cv.replaceChildren();cl.replaceChildren();
+ cv.append(el("h1","",d.name||""),el("div","sub",d.title||""),el("div","ct",(d.contact||[]).join(" | ")));
+ const sec=(t,...n)=>cv.append(el("h2","",t),...n);
+ if(d.summary)sec(L.sum,el("p","",d.summary));
+ if((d.experience||[]).length)sec(L.exp,...d.experience.flatMap(x=>{const r=el("div","row");r.append(el("span","",[x.role,x.company].filter(Boolean).join(", ")),el("span","",x.period||""));const u=el("ul");(x.bullets||[]).forEach(b=>u.append(el("li","",b)));return[r,u]}));
+ if((d.education||[]).length)sec(L.edu,...d.education.map(x=>{const r=el("div","row");r.append(el("span","",[x.title,x.place].filter(Boolean).join(", ")),el("span","",x.period||""));return r}));
+ if((d.skills||[]).length)sec(L.sk,el("p","",d.skills.join(", ")));
+ if((d.languages||[]).length)sec(L.lg,el("p","",d.languages.join(", ")));
+ cl.append(el("p","",d.name||""),...String(d.cover_letter||"").split(/\n\s*\n/).map(p=>el("p","",p.trim())));
+ $("#out").hidden=false;show("cv");$("#out").scrollIntoView({behavior:"smooth"});
+}
+function show(w){$("#cv").hidden=w!=="cv";$("#cl").hidden=w!=="cl";$("#vcv").className=w==="cv"?"":"off";$("#vcl").className=w==="cl"?"":"off";document.body.dataset.a=w}
+function mode(n){$("#m1").hidden=n!==1;$("#m2").hidden=n!==2;$("#t1").className=n===1?"":"off";$("#t2").className=n===2?"":"off"}
+$("#t1").onclick=()=>mode(1);$("#t2").onclick=()=>mode(2);
+$("#vcv").onclick=()=>show("cv");$("#vcl").onclick=()=>show("cl");$("#pdf").onclick=()=>window.print();
+$("#mkPrompt").onclick=async()=>{
+ if(!ok())return;const t=prompt_(),m=$("#cpMsg");
+ try{await navigator.clipboard.writeText(t);m.textContent="Copiado. Cole no chat da IA, espere a resposta e cole o resultado abaixo."}
+ catch(e){$("#back").value=t;m.textContent="Não consegui copiar sozinho. O pedido foi colocado na caixa abaixo: copie-o, cole na IA e depois troque pelo resultado."}
+};
+$("#go1").onclick=()=>{try{if(!$("#back").value.trim())throw new Error("Cole a resposta da IA primeiro.");render(parse($("#back").value));$("#err").textContent=""}catch(e){$("#err").textContent="Erro: "+e.message+" Peça à IA para responder só com o JSON."}};
+try{$("#key").value=localStorage.getItem("dk")||""}catch(e){}
+$("#go2").onclick=async()=>{
+ if(!ok())return;const k=$("#key").value.trim();if(!k){$("#err").textContent="Cole sua chave de API.";return}
+ try{localStorage.setItem("dk",k)}catch(e){}
+ const b=$("#go2");b.disabled=true;b.textContent="Gerando...";
+ try{
+  const r=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"user",content:prompt_()}],response_format:{type:"json_object"}})});
+  if(!r.ok)throw new Error("A API respondeu "+r.status+".");
+  const j=await r.json();render(parse(j.choices[0].message.content));
+ }catch(e){$("#err").textContent="Erro: "+e.message+" Se persistir, use o modo copiar e colar."}
+ b.disabled=false;b.textContent="Gerar com a chave";
+};
+</script>
+</body>
+</html>

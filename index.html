@@ -16,7 +16,7 @@ h1{font:700 1.7rem/1.2 Georgia,serif;margin:8px 0 4px}
 label{display:block;font-weight:600;margin:12px 0 4px}
 textarea,select,input{width:100%;padding:10px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit}
 textarea{min-height:130px;resize:vertical}
-button{font:inherit;font-weight:600;padding:10px 16px;border-radius:6px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer;margin:8px 8px 0 0}
+button{font:inherit;font-weight:600;padding:10px 16px;border-radius:6px;border:1px solid var(--ac);background:var(--ac);color:var(--bg);cursor:pointer;margin:8px 8px 0 0}
 button.alt{background:transparent;color:var(--ac)}
 button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
 .tabs button{margin:0 6px 12px 0}
@@ -24,6 +24,13 @@ button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-vis
 .hint{color:var(--mut);font-size:.9rem;margin:6px 0 0}
 .err{color:#c0392b;font-weight:600}
 [hidden]{display:none!important}
+ol.st{list-style:none;counter-reset:s;margin:10px 0;padding:0}
+ol.st>li{counter-increment:s;position:relative;padding:0 0 16px 40px}
+ol.st>li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--ac);color:var(--bg);font-weight:700;text-align:center;line-height:28px}
+details{margin:8px 0}summary{cursor:pointer;color:var(--ac);font-weight:600}
+pre{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px;font-size:.8rem;white-space:pre-wrap;word-break:break-word}
+code{background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:0 5px;font-weight:700}
+a{color:var(--ac)}.ok{color:var(--ac);font-weight:600}
 .paper{background:#fff;color:#111;padding:36px 40px;border-radius:4px;border:1px solid var(--bd);font:14px/1.45 Georgia,"Times New Roman",serif;overflow-x:auto}
 .paper h1{font-size:1.7rem;margin:0}.paper .sub{font-size:1.05rem;color:#333}.paper .ct{color:#444;font-size:.85rem;margin:2px 0 10px}
 .paper h2{font:700 .95rem Georgia,serif;border-bottom:1.5px solid #111;margin:16px 0 6px;padding-bottom:2px}
@@ -53,12 +60,26 @@ button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-vis
 <button id="t2" type="button" class="off">Com chave DeepSeek</button>
 </div>
 <div id="m1">
-<p class="hint">Sem custo e sem chave. Funciona com o chat gratuito do DeepSeek (ou qualquer outra IA).</p>
-<button id="mkPrompt" type="button">Copiar o pedido para a IA</button>
-<p class="hint" id="cpMsg"></p>
-<label for="back">Cole aqui a resposta da IA (o JSON)</label>
-<textarea id="back" placeholder='{"name": "...", ...}'></textarea>
+<p class="hint">Sem custo e sem chave. Você usa o chat gratuito do DeepSeek como "cérebro" e este site monta o documento. Siga os 5 passos, na ordem:</p>
+<ol class="st">
+<li><b>Preencha os campos 1, 2 e 3 acima:</b> seu currículo, o texto da vaga e o idioma.</li>
+<li><b>Clique no botão abaixo.</b> O site cria um texto com instruções para a IA, junto com seu currículo e a vaga, e copia tudo para você. Deve aparecer a palavra "Copiado".<br><button id="mkPrompt" type="button">Copiar o pedido para a IA</button><p class="hint ok" id="cpMsg"></p></li>
+<li><b>Abra o chat do DeepSeek</b> em outra aba: <a href="https://chat.deepseek.com" target="_blank" rel="noopener">chat.deepseek.com</a>. Comece uma conversa nova, <b>cole o texto</b> (Ctrl+V, ou toque e segure no celular e escolha "Colar") e envie. Espere a IA terminar de escrever.</li>
+<li><b>Copie a resposta da IA.</b> Ela vem como um texto "estranho" em uma só massa, que começa com <code>{</code> e termina com <code>}</code>. Use o botão de copiar que fica embaixo da resposta. Se não achar, selecione do primeiro <code>{</code> até o último <code>}</code>. Não copie a parte "Pensou por...".
+<details><summary>Ver exemplo de como a resposta é</summary>
+<pre>{"name":"Maria Exemplo","title":"Assistente Administrativa","contact":["maria@email.com","+34 600 000 000"],"summary":"Profissional com 5 anos de experiência em atendimento e organização.","experience":[{"role":"Assistente","company":"Empresa X","period":"2020 - 2025","bullets":["Organizei agendas e documentos.","Atendi clientes por telefone e e-mail."]}],"education":[{"title":"Curso de Gestão","place":"Escola Z","period":"2018"}],"skills":["Excel","Atendimento"],"languages":["Português nativo","Espanhol fluente"],"cover_letter":"Prezados senhores,\n\nTenho interesse na vaga..."}</pre>
+<p class="hint">A sua resposta será bem maior que esse exemplo. É normal parecer bagunçada: o site é quem organiza.</p></details></li>
+<li><b>Cole na caixa abaixo e clique em "Gerar currículo e carta".</b> O resultado aparece logo abaixo, com as abas Currículo e Carta.</li>
+</ol>
+<label for="back">Cole aqui a resposta da IA</label>
+<textarea id="back" placeholder='Cole aqui o texto que começa com { e termina com }'></textarea>
+<button id="paste" type="button" class="alt">Colar o que copiei</button>
 <button id="go1" type="button">Gerar currículo e carta</button>
+<details id="help"><summary>Deu erro? Veja o que fazer</summary>
+<p class="hint">Faltou um pedaço: você copiou a resposta incompleta (sem o <code>}</code> do final). Copie de novo, de preferência pelo botão de copiar da IA.</p>
+<p class="hint">A IA escreveu texto comum em vez do código: no chat do DeepSeek escreva "Responda só com o JSON válido, sem texto extra" e copie a nova resposta.</p>
+<p class="hint">A resposta foi cortada no meio: escreva "continue" no chat e cole as duas partes juntas, uma depois da outra.</p>
+<p class="hint">Copiou sem querer o texto "Pensou por...": não tem problema se o código completo vier junto, mas é melhor copiar só o bloco que começa com <code>{</code>.</p></details>
 </div>
 <div id="m2" hidden>
 <p class="hint">A chave fica só no seu navegador. A API do DeepSeek é cobrada por uso, em valores baixos. Se o navegador bloquear a chamada, use o modo copiar e colar.</p>
@@ -122,10 +143,11 @@ $("#t1").onclick=()=>mode(1);$("#t2").onclick=()=>mode(2);
 $("#vcv").onclick=()=>show("cv");$("#vcl").onclick=()=>show("cl");$("#pdf").onclick=()=>window.print();
 $("#mkPrompt").onclick=async()=>{
  if(!ok())return;const t=prompt_(),m=$("#cpMsg");
- try{await navigator.clipboard.writeText(t);m.textContent="Copiado. Cole no chat da IA, espere a resposta e cole o resultado abaixo."}
+ try{await navigator.clipboard.writeText(t);m.textContent="Copiado! Agora siga para o passo 3."}
  catch(e){$("#back").value=t;m.textContent="Não consegui copiar sozinho. O pedido foi colocado na caixa abaixo: copie-o, cole na IA e depois troque pelo resultado."}
 };
-$("#go1").onclick=()=>{try{if(!$("#back").value.trim())throw new Error("Cole a resposta da IA primeiro.");render(parse($("#back").value));$("#err").textContent=""}catch(e){$("#err").textContent="Erro: "+e.message+" Peça à IA para responder só com o JSON."}};
+$("#go1").onclick=()=>{try{if(!$("#back").value.trim())throw new Error("Cole a resposta da IA primeiro.");render(parse($("#back").value));$("#err").textContent=""}catch(e){$("#err").textContent="Erro: "+e.message+" Veja a ajuda \"Deu erro?\" logo acima.";$("#help").open=true}};
+$("#paste").onclick=async()=>{try{$("#back").value=await navigator.clipboard.readText();$("#err").textContent=""}catch(e){$("#err").textContent="O navegador não deixou colar sozinho. Toque na caixa e cole você mesmo (Ctrl+V)."}};
 try{$("#key").value=localStorage.getItem("dk")||""}catch(e){}
 $("#go2").onclick=async()=>{
  if(!ok())return;const k=$("#key").value.trim();if(!k){$("#err").textContent="Cole sua chave de API.";return}

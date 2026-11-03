@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Currículo e carta por vaga, grátis</title>
+<title>Tailored resume and cover letter for every job</title>
 <style>
 :root{--bg:#eef1f6;--fg:#182033;--card:#fff;--mut:#5d6679;--ac:#2a4bd7;--bd:#d3d9e6}
 @media(prefers-color-scheme:dark){:root{--bg:#111623;--fg:#e8ecf5;--card:#1a2133;--mut:#9aa4ba;--ac:#7f98ff;--bd:#2c3650}}
@@ -14,13 +14,13 @@ h1{font:700 1.7rem/1.2 Georgia,serif;margin:8px 0 4px}
 .lead{color:var(--mut);margin:0 0 20px}
 .box{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:16px}
 label{display:block;font-weight:600;margin:12px 0 4px}
-textarea,select,input{width:100%;padding:10px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit}
+textarea,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit}
 textarea{min-height:130px;resize:vertical}
 button{font:inherit;font-weight:600;padding:10px 16px;border-radius:6px;border:1px solid var(--ac);background:var(--ac);color:var(--bg);cursor:pointer;margin:8px 8px 0 0}
-button.alt{background:transparent;color:var(--ac)}
-button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+button.alt,.tabs button.off,.lg button[aria-pressed=false]{background:transparent;color:var(--ac)}
+button:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
 .tabs button{margin:0 6px 12px 0}
-.tabs button.off{background:transparent;color:var(--ac)}
+.lg{display:flex;gap:6px;justify-content:flex-end}.lg button{margin:0;padding:4px 10px}
 .hint{color:var(--mut);font-size:.9rem;margin:6px 0 0}
 .err{color:#c0392b;font-weight:600}
 [hidden]{display:none!important}
@@ -42,93 +42,155 @@ a{color:var(--ac)}.ok{color:var(--ac);font-weight:600}
 </head>
 <body data-a="cv">
 <main>
-<h1>Currículo e carta para cada vaga</h1>
-<p class="lead">Cole seu currículo e a vaga. Seus dados ficam no seu navegador; nada é guardado em servidor.</p>
+<div class="lg" role="group" aria-label="Language">
+<button type="button" data-l="en">EN</button><button type="button" data-l="pt">PT</button><button type="button" data-l="es">ES</button>
+</div>
+<h1 data-i="title"></h1>
+<p class="lead" data-i="lead"></p>
 
 <section class="box">
-<label for="cvIn">1. Seu currículo (texto)</label>
-<textarea id="cvIn" placeholder="Cole aqui seu currículo atual, com contato, experiência, formação e habilidades"></textarea>
-<label for="jobIn">2. A vaga (texto do anúncio)</label>
-<textarea id="jobIn" placeholder="Cole aqui o anúncio completo da vaga"></textarea>
-<label for="lang">3. Idioma do resultado</label>
-<select id="lang"><option value="pt">Português</option><option value="es">Español</option><option value="en">English</option></select>
+<label for="cvIn" data-i="l1"></label>
+<textarea id="cvIn" data-p="p1"></textarea>
+<label for="jobIn" data-i="l2"></label>
+<textarea id="jobIn" data-p="p2"></textarea>
+<label for="lang" data-i="l3"></label>
+<select id="lang"><option value="en">English</option><option value="pt">Português</option><option value="es">Español</option></select>
 </section>
 
 <section class="box">
-<div class="tabs">
-<button id="t1" type="button">Grátis: copiar e colar</button>
-<button id="t2" type="button" class="off">Com chave DeepSeek</button>
-</div>
-<div id="m1">
-<p class="hint">Sem custo e sem chave. Você usa o chat gratuito do DeepSeek como "cérebro" e este site monta o documento. Siga os 5 passos, na ordem:</p>
+<p class="hint" data-h="intro"></p>
 <ol class="st">
-<li><b>Preencha os campos 1, 2 e 3 acima:</b> seu currículo, o texto da vaga e o idioma.</li>
-<li><b>Clique no botão abaixo.</b> O site cria um texto com instruções para a IA, junto com seu currículo e a vaga, e copia tudo para você. Deve aparecer a palavra "Copiado".<br><button id="mkPrompt" type="button">Copiar o pedido para a IA</button><p class="hint ok" id="cpMsg"></p></li>
-<li><b>Abra o chat do DeepSeek</b> em outra aba: <a href="https://chat.deepseek.com" target="_blank" rel="noopener">chat.deepseek.com</a>. Comece uma conversa nova, <b>cole o texto</b> (Ctrl+V, ou toque e segure no celular e escolha "Colar") e envie. Espere a IA terminar de escrever.</li>
-<li><b>Copie a resposta da IA.</b> Ela vem como um texto "estranho" em uma só massa, que começa com <code>{</code> e termina com <code>}</code>. Use o botão de copiar que fica embaixo da resposta. Se não achar, selecione do primeiro <code>{</code> até o último <code>}</code>. Não copie a parte "Pensou por...".
-<details><summary>Ver exemplo de como a resposta é</summary>
-<pre>{"name":"Maria Exemplo","title":"Assistente Administrativa","contact":["maria@email.com","+34 600 000 000"],"summary":"Profissional com 5 anos de experiência em atendimento e organização.","experience":[{"role":"Assistente","company":"Empresa X","period":"2020 - 2025","bullets":["Organizei agendas e documentos.","Atendi clientes por telefone e e-mail."]}],"education":[{"title":"Curso de Gestão","place":"Escola Z","period":"2018"}],"skills":["Excel","Atendimento"],"languages":["Português nativo","Espanhol fluente"],"cover_letter":"Prezados senhores,\n\nTenho interesse na vaga..."}</pre>
-<p class="hint">A sua resposta será bem maior que esse exemplo. É normal parecer bagunçada: o site é quem organiza.</p></details></li>
-<li><b>Cole na caixa abaixo e clique em "Gerar currículo e carta".</b> O resultado aparece logo abaixo, com as abas Currículo e Carta.</li>
+<li data-h="s1"></li>
+<li><span data-h="s2"></span><br><button id="mkPrompt" type="button" data-i="btnCopy"></button><p class="hint ok" id="cpMsg"></p></li>
+<li data-h="s3"></li>
+<li><span data-h="s4"></span>
+<details><summary data-i="exSum"></summary>
+<pre>{"name":"Maria Example","title":"Administrative Assistant","contact":["maria@email.com","+34 600 000 000"],"summary":"Professional with 5 years of experience in customer service and office organization.","experience":[{"role":"Assistant","company":"Company X","period":"2020 - 2025","bullets":["Organized schedules and documents.","Handled customers by phone and e-mail."]}],"education":[{"title":"Management course","place":"School Z","period":"2018"}],"skills":["Excel","Customer service"],"languages":["Portuguese (native)","Spanish (fluent)"],"cover_letter":"Dear Hiring Manager,\n\nI am writing to apply for the position..."}</pre>
+<p class="hint" data-i="exNote"></p></details></li>
+<li data-h="s5"></li>
 </ol>
-<label for="back">Cole aqui a resposta da IA</label>
-<textarea id="back" placeholder='Cole aqui o texto que começa com { e termina com }'></textarea>
-<button id="paste" type="button" class="alt">Colar o que copiei</button>
-<button id="go1" type="button">Gerar currículo e carta</button>
-<details id="help"><summary>Deu erro? Veja o que fazer</summary>
-<p class="hint">Faltou um pedaço: você copiou a resposta incompleta (sem o <code>}</code> do final). Copie de novo, de preferência pelo botão de copiar da IA.</p>
-<p class="hint">A IA escreveu texto comum em vez do código: no chat do DeepSeek escreva "Responda só com o JSON válido, sem texto extra" e copie a nova resposta.</p>
-<p class="hint">A resposta foi cortada no meio: escreva "continue" no chat e cole as duas partes juntas, uma depois da outra.</p>
-<p class="hint">Copiou sem querer o texto "Pensou por...": não tem problema se o código completo vier junto, mas é melhor copiar só o bloco que começa com <code>{</code>.</p></details>
-</div>
-<div id="m2" hidden>
-<p class="hint">A chave fica só no seu navegador. A API do DeepSeek é cobrada por uso, em valores baixos. Se o navegador bloquear a chamada, use o modo copiar e colar.</p>
-<label for="key">Chave de API do DeepSeek</label>
-<input id="key" type="password" autocomplete="off" placeholder="sk-...">
-<button id="go2" type="button">Gerar com a chave</button>
-</div>
+<label for="back" data-i="lBack"></label>
+<textarea id="back" data-p="pBack"></textarea>
+<button id="paste" type="button" class="alt" data-i="btnPaste"></button>
+<button id="go" type="button" data-i="btnGo"></button>
+<details id="help"><summary data-i="hSum"></summary>
+<p class="hint" data-h="h1"></p><p class="hint" data-h="h2"></p><p class="hint" data-h="h3"></p><p class="hint" data-h="h4"></p></details>
 <p id="err" class="err" role="alert"></p>
 </section>
 
 <section id="out" hidden>
 <div class="tabs">
-<button id="vcv" type="button">Currículo</button>
-<button id="vcl" type="button" class="off">Carta</button>
-<button id="pdf" type="button" class="alt">Salvar em PDF</button>
+<button id="vcv" type="button" data-i="tCv"></button>
+<button id="vcl" type="button" class="off" data-i="tCl"></button>
+<button id="pdf" type="button" class="alt" data-i="pdf"></button>
 </div>
-<p class="hint">Clique no texto para editar antes de salvar. No diálogo de impressão, escolha "Salvar como PDF".</p>
+<p class="hint" data-i="edit"></p>
 <div class="paper" id="cv" contenteditable="true"></div>
 <div class="paper" id="cl" contenteditable="true" hidden></div>
 </section>
 </main>
 <script>
 const $=s=>document.querySelector(s);
-const LN={pt:"português do Brasil",es:"español de España",en:"English"};
+const I={
+en:{title:"Tailored resume and cover letter for every job",lead:"Paste your resume and the job posting. Your data stays in your browser; nothing is stored on a server.",
+l1:"1. Your resume (text)",p1:"Paste your current resume: contact, experience, education, skills",l2:"2. The job posting (text)",p2:"Paste the full job ad here",l3:"3. Output language",
+intro:`Free, no account, no key. You use any AI chat (ChatGPT, Gemini, Claude, Copilot or any other) as the "brain", and this site builds the documents. Follow the 5 steps in order:`,
+s1:"<b>Fill in fields 1, 2 and 3 above:</b> your resume, the job posting and the output language.",
+s2:`<b>Click the button below.</b> The site writes instructions for the AI, together with your resume and the job posting, and copies it all for you. You should see "Copied".`,
+btnCopy:"Copy the request for the AI",
+s3:"<b>Open any AI chat</b> in another tab, start a new conversation, <b>paste the text</b> (Ctrl+V, or long-press and choose Paste on a phone) and send it. Wait until the AI finishes writing.",
+s4:`<b>Copy the AI's answer.</b> It looks like a strange block of text that starts with <code>{</code> and ends with <code>}</code>. Use the copy button under the answer, or select from the first <code>{</code> to the last <code>}</code>. Do not copy the AI's "thinking" notes.`,
+exSum:"See an example of what the answer looks like",exNote:"Your answer will be much longer. It is normal for it to look messy: the site organizes it.",
+s5:`<b>Paste it in the box below and click "Create resume and letter".</b> The result appears underneath, with Resume and Letter tabs.`,
+lBack:"Paste the AI's answer here",pBack:"Paste the text that starts with { and ends with }",btnPaste:"Paste what I copied",btnGo:"Create resume and letter",
+hSum:"Got an error? What to do",
+h1:"Something is missing: the answer you copied is incomplete (no final <code>}</code>). Copy it again, preferably with the AI's copy button.",
+h2:`The AI wrote normal text instead of the code: in the chat write "Reply only with valid JSON, no extra text" and copy the new answer.`,
+h3:`The answer was cut off: write "continue" in the chat and paste both parts together, one after the other.`,
+h4:`The AI's "thinking" notes came along: copy only the block that starts with <code>{</code>.`,
+copied:"Copied! Now go to step 3.",noCopy:"Your browser did not allow copying. The request was put in the box below: copy it from there, paste it into the AI, then replace it with the answer.",
+eFill:"Fill in the resume and the job posting.",ePaste:"Paste the AI's answer first.",eNo:"I could not find the code in the answer.",eHelp:`See "Got an error?" just above.`,
+eClip:"Your browser did not allow pasting automatically. Tap the box and paste it yourself (Ctrl+V).",
+tCv:"Resume",tCl:"Letter",pdf:"Save as PDF",edit:`Click the text to edit it before saving. In the print dialog, choose "Save as PDF".`},
+pt:{title:"Currículo e carta personalizados para cada vaga",lead:"Cole seu currículo e a vaga. Seus dados ficam no seu navegador; nada é guardado em servidor.",
+l1:"1. Seu currículo (texto)",p1:"Cole seu currículo atual: contato, experiência, formação, habilidades",l2:"2. A vaga (texto do anúncio)",p2:"Cole aqui o anúncio completo da vaga",l3:"3. Idioma do resultado",
+intro:`Grátis, sem conta e sem chave. Você usa qualquer chat de IA (ChatGPT, Gemini, Claude, Copilot ou outro) como "cérebro", e este site monta os documentos. Siga os 5 passos, na ordem:`,
+s1:"<b>Preencha os campos 1, 2 e 3 acima:</b> seu currículo, a vaga e o idioma do resultado.",
+s2:`<b>Clique no botão abaixo.</b> O site cria instruções para a IA, junto com seu currículo e a vaga, e copia tudo para você. Deve aparecer a palavra "Copiado".`,
+btnCopy:"Copiar o pedido para a IA",
+s3:"<b>Abra qualquer chat de IA</b> em outra aba, comece uma conversa nova, <b>cole o texto</b> (Ctrl+V, ou toque e segure no celular e escolha Colar) e envie. Espere a IA terminar de escrever.",
+s4:`<b>Copie a resposta da IA.</b> Ela vem como um texto "estranho", que começa com <code>{</code> e termina com <code>}</code>. Use o botão de copiar embaixo da resposta, ou selecione do primeiro <code>{</code> até o último <code>}</code>. Não copie as anotações de "pensamento" da IA.`,
+exSum:"Ver exemplo de como a resposta é",exNote:"A sua resposta será bem maior. É normal parecer bagunçada: o site é quem organiza.",
+s5:`<b>Cole na caixa abaixo e clique em "Criar currículo e carta".</b> O resultado aparece logo abaixo, com as abas Currículo e Carta.`,
+lBack:"Cole aqui a resposta da IA",pBack:"Cole o texto que começa com { e termina com }",btnPaste:"Colar o que copiei",btnGo:"Criar currículo e carta",
+hSum:"Deu erro? Veja o que fazer",
+h1:"Faltou um pedaço: a resposta copiada está incompleta (sem o <code>}</code> do final). Copie de novo, de preferência pelo botão de copiar da IA.",
+h2:`A IA escreveu texto comum em vez do código: no chat escreva "Responda só com JSON válido, sem texto extra" e copie a nova resposta.`,
+h3:`A resposta foi cortada no meio: escreva "continue" no chat e cole as duas partes juntas, uma depois da outra.`,
+h4:`Vieram junto as anotações de "pensamento" da IA: copie só o bloco que começa com <code>{</code>.`,
+copied:"Copiado! Agora siga para o passo 3.",noCopy:"O navegador não deixou copiar. O pedido foi colocado na caixa abaixo: copie de lá, cole na IA e depois troque pelo resultado.",
+eFill:"Preencha o currículo e a vaga.",ePaste:"Cole primeiro a resposta da IA.",eNo:"Não encontrei o código na resposta.",eHelp:`Veja "Deu erro?" logo acima.`,
+eClip:"O navegador não deixou colar sozinho. Toque na caixa e cole você mesmo (Ctrl+V).",
+tCv:"Currículo",tCl:"Carta",pdf:"Salvar em PDF",edit:`Clique no texto para editar antes de salvar. Na janela de impressão, escolha "Salvar como PDF".`},
+es:{title:"Currículum y carta de presentación a medida para cada oferta",lead:"Pega tu currículum y la oferta. Tus datos se quedan en tu navegador; no se guarda nada en un servidor.",
+l1:"1. Tu currículum (texto)",p1:"Pega tu currículum actual: contacto, experiencia, formación, habilidades",l2:"2. La oferta (texto del anuncio)",p2:"Pega aquí el anuncio completo de la oferta",l3:"3. Idioma del resultado",
+intro:`Gratis, sin cuenta y sin clave. Usas cualquier chat de IA (ChatGPT, Gemini, Claude, Copilot u otro) como "cerebro", y esta web monta los documentos. Sigue los 5 pasos en orden:`,
+s1:"<b>Rellena los campos 1, 2 y 3 de arriba:</b> tu currículum, la oferta y el idioma del resultado.",
+s2:`<b>Pulsa el botón de abajo.</b> La web crea instrucciones para la IA, junto con tu currículum y la oferta, y lo copia todo. Debe aparecer la palabra "Copiado".`,
+btnCopy:"Copiar la petición para la IA",
+s3:"<b>Abre cualquier chat de IA</b> en otra pestaña, empieza una conversación nueva, <b>pega el texto</b> (Ctrl+V, o mantén pulsado en el móvil y elige Pegar) y envíalo. Espera a que la IA termine de escribir.",
+s4:`<b>Copia la respuesta de la IA.</b> Parece un texto "raro" que empieza con <code>{</code> y termina con <code>}</code>. Usa el botón de copiar bajo la respuesta, o selecciona desde el primer <code>{</code> hasta el último <code>}</code>. No copies las notas de "razonamiento" de la IA.`,
+exSum:"Ver un ejemplo de cómo es la respuesta",exNote:"Tu respuesta será mucho más larga. Es normal que parezca desordenada: la web la organiza.",
+s5:`<b>Pégala en la caja de abajo y pulsa "Crear currículum y carta".</b> El resultado aparece debajo, con las pestañas Currículum y Carta.`,
+lBack:"Pega aquí la respuesta de la IA",pBack:"Pega el texto que empieza con { y termina con }",btnPaste:"Pegar lo que copié",btnGo:"Crear currículum y carta",
+hSum:"¿Error? Qué hacer",
+h1:"Falta un trozo: la respuesta copiada está incompleta (sin el <code>}</code> final). Cópiala de nuevo, mejor con el botón de copiar de la IA.",
+h2:`La IA escribió texto normal en vez del código: en el chat escribe "Responde solo con JSON válido, sin texto extra" y copia la nueva respuesta.`,
+h3:`La respuesta se cortó: escribe "continúa" en el chat y pega las dos partes juntas, una detrás de otra.`,
+h4:`Se copiaron también las notas de "razonamiento" de la IA: copia solo el bloque que empieza con <code>{</code>.`,
+copied:"¡Copiado! Ahora ve al paso 3.",noCopy:"El navegador no permitió copiar. La petición se puso en la caja de abajo: cópiala de ahí, pégala en la IA y luego cámbiala por el resultado.",
+eFill:"Rellena el currículum y la oferta.",ePaste:"Pega primero la respuesta de la IA.",eNo:"No encontré el código en la respuesta.",eHelp:`Mira "¿Error?" justo arriba.`,
+eClip:"El navegador no permitió pegar solo. Toca la caja y pega tú mismo (Ctrl+V).",
+tCv:"Currículum",tCl:"Carta",pdf:"Guardar en PDF",edit:`Haz clic en el texto para editarlo antes de guardar. En la ventana de impresión, elige "Guardar como PDF".`}
+};
 const T={pt:{sum:"Resumo",exp:"Experiência",edu:"Formação",sk:"Habilidades",lg:"Idiomas"},es:{sum:"Resumen",exp:"Experiencia",edu:"Formación",sk:"Habilidades",lg:"Idiomas"},en:{sum:"Summary",exp:"Experience",edu:"Education",sk:"Skills",lg:"Languages"}};
+const LN={pt:"Brazilian Portuguese",es:"Spanish (Spain)",en:"English"};
 const SCHEMA='{"name":"","title":"","contact":[""],"summary":"","experience":[{"role":"","company":"","period":"","bullets":[""]}],"education":[{"title":"","place":"","period":""}],"skills":[""],"languages":[""],"cover_letter":""}';
+let UL="en",touched=false;
+const t=k=>I[UL][k];
+function setLang(l){
+ UL=l;document.documentElement.lang=l;document.title=t("title");
+ document.querySelectorAll("[data-i]").forEach(n=>n.textContent=t(n.dataset.i));
+ document.querySelectorAll("[data-h]").forEach(n=>n.innerHTML=t(n.dataset.h));
+ document.querySelectorAll("[data-p]").forEach(n=>n.placeholder=t(n.dataset.p));
+ document.querySelectorAll(".lg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===l));
+ if(!touched)$("#lang").value=l;
+ $("#cpMsg").textContent="";$("#err").textContent="";
+}
+document.querySelectorAll(".lg button").forEach(b=>b.onclick=()=>{setLang(b.dataset.l);try{localStorage.setItem("ul",b.dataset.l)}catch(e){}});
+$("#lang").onchange=()=>touched=true;
 function prompt_(){
- return `Você é um especialista em recrutamento. Adapte o currículo abaixo à vaga e escreva uma carta de apresentação.
-Idioma de saída: ${LN[$("#lang").value]}.
-Regras:
-- Não invente experiências, datas, cargos, estudos nem habilidades que não estejam no currículo.
-- Reordene e destaque o que for relevante para a vaga e use as palavras-chave do anúncio quando forem verdadeiras para a pessoa.
-- Bullets curtos, começando com verbo de ação.
-- Carta com no máximo 250 palavras, em parágrafos separados por \\n\\n.
-- Responda SOMENTE com JSON válido, sem markdown, neste formato: ${SCHEMA}
+ return `You are a recruitment expert. Tailor the resume below to the job posting and write a cover letter.
+Output language: ${LN[$("#lang").value]}.
+Rules:
+- Do not invent experience, dates, job titles, studies or skills that are not in the resume.
+- Reorder and highlight what is relevant to the job, and use keywords from the posting when they are true for the person.
+- Short bullets, each starting with an action verb.
+- Cover letter of at most 250 words, paragraphs separated by \\n\\n.
+- Reply ONLY with valid JSON, no markdown and no extra text, in this format: ${SCHEMA}
 
-CURRÍCULO:
+RESUME:
 ${$("#cvIn").value.trim()}
 
-VAGA:
+JOB POSTING:
 ${$("#jobIn").value.trim()}`;
 }
-function ok(){const e=$("#err");e.textContent="";if(!$("#cvIn").value.trim()||!$("#jobIn").value.trim()){e.textContent="Preencha o currículo e a vaga.";return false}return true}
-function parse(t){const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a<0||b<a)throw new Error("Não encontrei um JSON na resposta.");return JSON.parse(t.slice(a,b+1))}
-function el(t,c,x){const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n}
+function parse(s){const a=s.indexOf("{"),b=s.lastIndexOf("}");if(a<0||b<a)throw new Error(t("eNo"));return JSON.parse(s.slice(a,b+1))}
+function el(n,c,x){const e=document.createElement(n);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function render(d){
  const L=T[$("#lang").value],cv=$("#cv"),cl=$("#cl");cv.replaceChildren();cl.replaceChildren();
  cv.append(el("h1","",d.name||""),el("div","sub",d.title||""),el("div","ct",(d.contact||[]).join(" | ")));
- const sec=(t,...n)=>cv.append(el("h2","",t),...n);
+ const sec=(h,...n)=>cv.append(el("h2","",h),...n);
  if(d.summary)sec(L.sum,el("p","",d.summary));
  if((d.experience||[]).length)sec(L.exp,...d.experience.flatMap(x=>{const r=el("div","row");r.append(el("span","",[x.role,x.company].filter(Boolean).join(", ")),el("span","",x.period||""));const u=el("ul");(x.bullets||[]).forEach(b=>u.append(el("li","",b)));return[r,u]}));
  if((d.education||[]).length)sec(L.edu,...d.education.map(x=>{const r=el("div","row");r.append(el("span","",[x.title,x.place].filter(Boolean).join(", ")),el("span","",x.period||""));return r}));
@@ -138,28 +200,21 @@ function render(d){
  $("#out").hidden=false;show("cv");$("#out").scrollIntoView({behavior:"smooth"});
 }
 function show(w){$("#cv").hidden=w!=="cv";$("#cl").hidden=w!=="cl";$("#vcv").className=w==="cv"?"":"off";$("#vcl").className=w==="cl"?"":"off";document.body.dataset.a=w}
-function mode(n){$("#m1").hidden=n!==1;$("#m2").hidden=n!==2;$("#t1").className=n===1?"":"off";$("#t2").className=n===2?"":"off"}
-$("#t1").onclick=()=>mode(1);$("#t2").onclick=()=>mode(2);
 $("#vcv").onclick=()=>show("cv");$("#vcl").onclick=()=>show("cl");$("#pdf").onclick=()=>window.print();
 $("#mkPrompt").onclick=async()=>{
- if(!ok())return;const t=prompt_(),m=$("#cpMsg");
- try{await navigator.clipboard.writeText(t);m.textContent="Copiado! Agora siga para o passo 3."}
- catch(e){$("#back").value=t;m.textContent="Não consegui copiar sozinho. O pedido foi colocado na caixa abaixo: copie-o, cole na IA e depois troque pelo resultado."}
+ const e=$("#err");e.textContent="";
+ if(!$("#cvIn").value.trim()||!$("#jobIn").value.trim()){e.textContent=t("eFill");return}
+ const p=prompt_(),m=$("#cpMsg");
+ try{await navigator.clipboard.writeText(p);m.textContent=t("copied")}
+ catch(x){$("#back").value=p;m.textContent=t("noCopy")}
 };
-$("#go1").onclick=()=>{try{if(!$("#back").value.trim())throw new Error("Cole a resposta da IA primeiro.");render(parse($("#back").value));$("#err").textContent=""}catch(e){$("#err").textContent="Erro: "+e.message+" Veja a ajuda \"Deu erro?\" logo acima.";$("#help").open=true}};
-$("#paste").onclick=async()=>{try{$("#back").value=await navigator.clipboard.readText();$("#err").textContent=""}catch(e){$("#err").textContent="O navegador não deixou colar sozinho. Toque na caixa e cole você mesmo (Ctrl+V)."}};
-try{$("#key").value=localStorage.getItem("dk")||""}catch(e){}
-$("#go2").onclick=async()=>{
- if(!ok())return;const k=$("#key").value.trim();if(!k){$("#err").textContent="Cole sua chave de API.";return}
- try{localStorage.setItem("dk",k)}catch(e){}
- const b=$("#go2");b.disabled=true;b.textContent="Gerando...";
- try{
-  const r=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"user",content:prompt_()}],response_format:{type:"json_object"}})});
-  if(!r.ok)throw new Error("A API respondeu "+r.status+".");
-  const j=await r.json();render(parse(j.choices[0].message.content));
- }catch(e){$("#err").textContent="Erro: "+e.message+" Se persistir, use o modo copiar e colar."}
- b.disabled=false;b.textContent="Gerar com a chave";
+$("#go").onclick=()=>{
+ try{if(!$("#back").value.trim())throw new Error(t("ePaste"));render(parse($("#back").value));$("#err").textContent=""}
+ catch(x){$("#err").textContent=t("eHelp")?x.message+" "+t("eHelp"):x.message;$("#help").open=true}
 };
+$("#paste").onclick=async()=>{try{$("#back").value=await navigator.clipboard.readText();$("#err").textContent=""}catch(x){$("#err").textContent=t("eClip")}};
+let l0=(navigator.language||"en").slice(0,2);try{l0=localStorage.getItem("ul")||l0}catch(e){}
+setLang(I[l0]?l0:"en");
 </script>
 </body>
 </html>
